@@ -6,6 +6,8 @@ from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from werkzeug.utils import unquote_plus
+from urllib.parse import unquote_plus
+
 
 
 from flask import jsonify
