@@ -112,7 +112,6 @@ def login():
     
     return jsonify({'success': False, 'message': 'Only POST method is allowed'}), 405
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -124,6 +123,11 @@ def register():
         
         if not username or not password:
             return jsonify({'success': False, 'message': 'Please provide both username and password'}), 400
+        
+        # Check if the username already exists
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return jsonify({'success': False, 'message': 'Account with this username already exists. Please choose a different username.'}), 409
         
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         new_user = User(username=username, password=hashed_password, phone_number=phone_number, gender=gender, role=role)
@@ -140,7 +144,6 @@ def register():
                 return jsonify({'success': False, 'message': 'An error occurred. Please try again.'}), 500
     
     return jsonify({'success': False, 'message': 'Only POST method is allowed'}), 405
-
 @app.route('/user_page', methods=['GET', 'POST'])
 @login_required
 def user_page():
