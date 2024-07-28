@@ -6,10 +6,8 @@ from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 from urllib.parse import unquote_plus
-
-
-
 from flask import jsonify
+
 
 # Products data
 products = [
@@ -100,19 +98,20 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         if not username or not password:
-            flash('Please provide both username and password', 'danger')
-            return redirect(url_for('login'))
+            return jsonify({'success': False, 'message': 'Please provide both username and password'}), 400
+        
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            flash('Logged in successfully.', 'success')
             if user.role == 'admin':
-                return redirect(url_for('admin_page'))
+                return jsonify({'success': True, 'redirect_url': url_for('admin_page')})
             else:
-                return redirect(url_for('user_page'))
+                return jsonify({'success': True, 'redirect_url': url_for('user_page')})
         else:
-            flash('Invalid credentials', 'danger')
-    return render_template('login.html')
+            return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
+    
+    return jsonify({'success': False, 'message': 'Only POST method is allowed'}), 405
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -122,24 +121,25 @@ def register():
         phone_number = request.form.get('phone_number')
         gender = request.form.get('gender')
         role = request.form.get('role', 'user')
+        
         if not username or not password:
-            flash('Please provide both username and password', 'danger')
-            return redirect(url_for('register'))
+            return jsonify({'success': False, 'message': 'Please provide both username and password'}), 400
+        
         hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
         new_user = User(username=username, password=hashed_password, phone_number=phone_number, gender=gender, role=role)
+        
         try:
             db.session.add(new_user)
             db.session.commit()
-            flash('User registered successfully!', 'success')
-            return redirect(url_for('login'))
+            return jsonify({'success': True, 'message': 'User registered successfully!'}), 201
         except IntegrityError as e:
             db.session.rollback()
             if 'UNIQUE constraint failed: user.phone_number' in str(e):
-                flash('Error: Phone number already exists. Please use a different phone number.', 'danger')
+                return jsonify({'success': False, 'message': 'Phone number already exists. Please use a different phone number.'}), 409
             else:
-                flash('An error occurred. Please try again.', 'danger')
-            return redirect(url_for('register'))
-    return render_template('register.html')
+                return jsonify({'success': False, 'message': 'An error occurred. Please try again.'}), 500
+    
+    return jsonify({'success': False, 'message': 'Only POST method is allowed'}), 405
 
 @app.route('/user_page', methods=['GET', 'POST'])
 @login_required
