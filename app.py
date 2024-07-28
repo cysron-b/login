@@ -15,28 +15,28 @@ products = [
         "id": 1,
         "name": "Bulk Water Delivery",
         "quantity": "100 Liters",
-        "price": "Rwf 10,000",
+        "price": 10000,
         "image": "https://i.pinimg.com/564x/2c/ce/82/2cce8213890dc673931da939b1eac3f6.jpg"
     },
     {
         "id": 2,
         "name": "Water Testing Kit",
         "quantity": "2 Testers",
-        "price": "Rwf 2000",
+        "price": 2000,
         "image": "https://i.pinimg.com/564x/b9/fd/41/b9fd41180b797dac26eb47e67b2edf57.jpg"
     },
     {
         "id": 3,
         "name": "Water Containers (20L)",
         "quantity": "1 Jerry Can",
-        "price": "Rwf 1500",
+        "price": 1500,
         "image": "https://i.pinimg.com/564x/39/35/6a/39356a9153c083b000e8671c758f4895.jpg"
     },
     {
         "id": 4,
         "name": "Water Jug",
         "quantity": "1 Jug",
-        "price": "Rwf 8,000",
+        "price": 8000,
         "image": "https://images.pexels.com/photos/20612772/pexels-photo-20612772/free-photo-of-jugs-with-water-on-a-street.jpeg?auto=compress&cs=tinysrgb&w=600"
     }
 ]
